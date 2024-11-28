@@ -1,0 +1,26 @@
+name: "SimpleFSM"
+states:
+  Idle:
+    on_enter: "Entering Idle"
+    on_exit: "Exiting Idle"
+  Active:
+    on_enter: "Entering Active"
+    on_exit: "Exiting Active"
+transitions:
+  - source: "Idle"
+    target: "Active"
+    condition: "lambda: True"
+    action: "lambda: print('Activating')"
+  - source: "Active"
+    target: "Idle"
+    condition: "lambda: True"
+    action: "lambda: print('Deactivating')"
+events:
+  Activate:
+    transitions:
+      - source: "Idle"
+        target: "Active"
+  Deactivate:
+    transitions:
+      - source: "Active"
+        target: "Idle"

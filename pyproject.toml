@@ -4,4 +4,6 @@ version = "0.0.1"
 description = "A versatile Python framework for finite state machines and workflows."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pyyaml>=6.0.2",
+]
