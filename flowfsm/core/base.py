@@ -13,11 +13,11 @@ class FSMBaseMeta(type):
     @staticmethod
     def generate_trigger_event_method():
         def trigger_event(self, event):
-            transition = event.trigger(self.current_state)
+            transition = event.trigger(self, self.current_state)
             if transition:
-                self.current_state.exit()
+                self.current_state().exit()
                 transition.execute()
-                self.current_state = StateRegistry.get(transition.target)()
+                self.current_state = StateRegistry.get(transition.target.name)()
                 self.current_state.enter()
             else:
                 raise InvalidTransitionError(f"No valid transition for event '{event}' from state '{self.current_state}'.")

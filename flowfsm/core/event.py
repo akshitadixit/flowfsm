@@ -3,14 +3,16 @@ class EventRegistry:
     _events = {}
 
     @classmethod
-    def register(cls, name):
+    def register(cls, name, terminal_states=None):
+        """Register events and optionally define terminal states."""
         if name in cls._events:
             raise ValueError(f"Event '{name}' is already registered.")
         
-        def create_event_class(name):
-            """Dynamically creates an event class."""
+        def create_event_class(name, terminal_states):
+            """Dynamically creates an event class with terminal states."""
             def __init__(self):
                 self.transitions = []
+                self.terminal_states = terminal_states or []  # Default to an empty list if no terminal states are provided
 
             def add_transition(self, transition):
                 self.transitions.append(transition)
@@ -29,26 +31,37 @@ class EventRegistry:
             }
             return type(name, (object,), methods)
         
-        event_class = create_event_class(name)
+        # Create and register the event class with terminal states
+        event_class = create_event_class(name, terminal_states)
         cls._events[name] = event_class
         return event_class
 
     @classmethod
     def get(cls, name):
+        """Retrieve an event class by name."""
         if name not in cls._events:
             raise ValueError(f"Event '{name}' is not registered.")
         return cls._events[name]
+    
+    @classmethod
+    def clear(cls):
+        """Clear all registered events."""
+        cls._events = {}
 
 
 class Event:
     """User API for creating and managing events."""
-    def __init__(self, name):
+    def __init__(self, name, terminal_states=None):
         self.name = name
-        self._event_class = EventRegistry.register(name)
+        self.terminal_states = terminal_states
+        self._event_class = EventRegistry.register(name, terminal_states)
         self._event_instance = self._event_class()
 
     def __getattr__(self, attr):
+        """Delegate attribute access to the event instance."""
         return getattr(self._event_instance, attr)
 
     def __repr__(self):
+        """Represent the event instance."""
         return repr(self._event_instance)
+    

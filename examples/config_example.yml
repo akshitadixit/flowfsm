@@ -1,26 +1,30 @@
 name: "SimpleFSM"
 states:
   Idle:
-    on_enter: "Entering Idle"
-    on_exit: "Exiting Idle"
+    on_enter: "Entering Idle hehe"
+    on_exit: "Exiting Idle hehe"
   Active:
-    on_enter: "Entering Active"
-    on_exit: "Exiting Active"
+    on_enter: "Entering Active ehehe"
+    on_exit: "Exiting Active ehehe"
 transitions:
   - source: "Idle"
     target: "Active"
     condition: "lambda: True"
-    action: "lambda: print('Activating')"
+    action: "print('====Activating====')"
   - source: "Active"
     target: "Idle"
     condition: "lambda: True"
-    action: "lambda: print('Deactivating')"
+    action: "print('====Deactivating====')"
 events:
   Activate:
     transitions:
       - source: "Idle"
         target: "Active"
+    terminal:
+      - "Active"
   Deactivate:
     transitions:
       - source: "Active"
         target: "Idle"
+    terminal:
+      - "Idle"

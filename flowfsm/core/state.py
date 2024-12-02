@@ -7,16 +7,25 @@ class StateRegistry:
     def register(cls, name, on_enter=None, on_exit=None):
         def create_state_class(name, on_enter=None, on_exit=None):
             """Dynamically creates a state class with custom behavior."""
-            def default_enter(self):
+            def enter(self):
+                if on_enter:
+                    print(on_enter)
+                    return
                 print(f"Entering {name}")
 
-            def default_exit(self):
+            def exit(self):
+                if on_exit:
+                    print(on_exit)
+                    return
                 print(f"Exiting {name}")
 
             methods = {
-                "enter": on_enter or default_enter,
-                "exit": on_exit or default_exit,
+                "enter": enter,
+                "exit": exit,
                 "__repr__": lambda self: f"<State: {name}>",
+                "name": name,
+                "on_enter": on_enter,
+                "on_exit": on_exit,
             }
             return type(name, (object,), methods)
         
@@ -32,6 +41,11 @@ class StateRegistry:
         if name not in cls._states:
             raise ValueError(f"State '{name}' is not registered.")
         return cls._states[name]
+    
+    @classmethod
+    def clear(cls):
+        """Clear all registered states."""
+        cls._states = {}
 
 
 # User-facing State API

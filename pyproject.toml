@@ -1,6 +1,6 @@
 [project]
 name = "flow-fsm"
-version = "0.0.1"
+version = "0.0.2"
 description = "A versatile Python framework for finite state machines and workflows."
 readme = "README.md"
 requires-python = ">=3.13"

@@ -6,12 +6,12 @@ class TransitionRegistry:
     def register(cls, source, target, condition=None, action=None):
         def create_transition_class(source, target, condition=None, action=None):
             """Dynamically creates a transition class."""
-            def is_valid(self):
-                return condition() if condition else True
+            def is_valid(*args):
+                return eval(condition) if condition else True
 
-            def execute(self):
+            def execute():
                 if action:
-                    action()
+                    eval(action)
 
             methods = {
                 "is_valid": is_valid,
@@ -19,6 +19,8 @@ class TransitionRegistry:
                 "__repr__": lambda self: f"<Transition: {source} -> {target}>",
                 "source": source,
                 "target": target,
+                "condition": condition,
+                "action": action,
             }
             return type(f"Transition_{source}_to_{target}", (object,), methods)
         
@@ -30,6 +32,11 @@ class TransitionRegistry:
     def get_all(cls):
         """Retrieve all registered transitions."""
         return cls._transitions
+    
+    @classmethod
+    def clear(cls):
+        """Clear all registered transitions."""
+        cls._transitions = []
 
 
 class Transition:
