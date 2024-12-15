@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+
+recursive-include docs *
+recursive-include examples *
+recursive-include flowfsm *.py
+recursive-include tests *.py
+
+include pyproject.toml
+include uv.lock

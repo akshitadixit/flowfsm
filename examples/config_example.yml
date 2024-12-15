@@ -1,0 +1,68 @@
+workflows:
+  - name: "SimpleFSM"
+    states:
+      Idle:
+        on_enter: "Entering Idle state"
+        on_exit: "Exiting Idle state"
+        is_initial: True
+      Active:
+        on_enter: "Entering Active state"
+        on_exit: "Exiting Active state"
+        is_terminal: True
+    transitions:
+      - source: "Idle"
+        target: "Active"
+        action: "print('\tTransition: Activating system'); context = {'ready': True}"
+      - source: "Active"
+        target: "Idle"
+        condition: "not context.get('ready', True)"
+        action: "print('\tTransition: Deactivating system')"
+    events:
+      Activate:
+        transitions:
+          - source: "Idle"
+            target: "Active"
+        auto_trigger: True
+      Deactivate:
+        transitions:
+          - source: "Active"
+            target: "Idle"
+
+  - name: "AdvancedFSM"
+    states:
+      Start:
+        on_enter: "Starting the process"
+        is_initial: True
+      Processing:
+        on_enter: "Processing the task"
+        on_exit: "----"
+      End:
+        on_enter: "Reached End state"
+        on_exit: "Exiting End state"
+        is_terminal: True
+    transitions:
+      - source: "Start"
+        target: "Processing"
+        action: "print('\tTransition: Starting task'); context['progress'] = 20; context['retries'] = 0"
+      - source: "Processing"
+        target: "Processing"
+        condition: "context['retries'] < 3"
+        action: "print('\tTransition: Still processing task'); context['retries'] += 1; context['progress'] += 10"
+      - source: "Processing"
+        target: "End"
+        condition: "context.get('progress', 0) == 50"
+        action: "print('\tTransition: Task complete! Moving to End'); context['progress'] = 100;"
+    events:
+      StartProcessing:
+        transitions:
+          - source: "Start"
+            target: "Processing"
+        auto_trigger: True
+      Retry:
+        transitions:
+          - source: "Processing"
+            target: "Processing"
+      Complete:
+        transitions:
+          - source: "Processing"
+            target: "End"

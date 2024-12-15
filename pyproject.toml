@@ -1,7 +1,19 @@
 [project]
 name = "flow-fsm"
-version = "0.0.1"
+version = "1.0.0"
 description = "A versatile Python framework for finite state machines and workflows."
 readme = "README.md"
+authors = ["Akshita Dixit <akshitadixit.int@gmail.com>"]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "pytest-cov>=6.0.0",
+    "pyyaml>=6.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.3",
+    "mypy>=1.13.0",
+    "readme-builder>=0.1.3",
+    "pytest>=8.3.4",
+]
