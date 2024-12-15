@@ -1,5 +1,7 @@
 # FlowFSM
 
+[![](https://img.shields.io/badge/PyPI-3775A9.svg?style=for-the-badge&logo=PyPI&logoColor=white)](https://pypi.org/project/flow-fsm/)
+
 ## Project Overview
 
 FlowFSM is a package for building and managing finite state machines (FSMs).  It provides tools for defining states, transitions, events, and workflows, simplifying the development of complex state-driven applications.  The framework will be supporting features for configuration, runtime management, and visualization as and when they are developed.
