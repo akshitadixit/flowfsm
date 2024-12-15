@@ -1,23 +1,31 @@
 # State Registry to manage dynamically created state classes
+from flowfsm.core.errors import StateNotFoundError
+
+
 class StateRegistry:
     """Manages all dynamically created state classes."""
+
     _states = {}
 
     @classmethod
-    def register(cls, name, on_enter=None, on_exit=None):
-        def create_state_class(name, on_enter=None, on_exit=None):
+    def register(
+        cls, name, on_enter=None, on_exit=None, is_initial=False, is_terminal=False
+    ):
+        def create_state_class(
+            name, on_enter=None, on_exit=None, is_initial=False, is_terminal=False
+        ):
             """Dynamically creates a state class with custom behavior."""
+
             def enter(self):
-                if on_enter:
-                    print(on_enter)
-                    return
-                print(f"Entering {name}")
+                print(on_enter if on_enter else f"Entering {name}")
+                if is_terminal:
+                    self.exit()
+                    return 1
+                return 0
 
             def exit(self):
-                if on_exit:
-                    print(on_exit)
-                    return
-                print(f"Exiting {name}")
+                print(on_exit if on_exit else f"Exiting {name}")
+                return 0
 
             methods = {
                 "enter": enter,
@@ -26,12 +34,16 @@ class StateRegistry:
                 "name": name,
                 "on_enter": on_enter,
                 "on_exit": on_exit,
+                "is_initial": is_initial,
+                "is_terminal": is_terminal,
             }
             return type(name, (object,), methods)
-        
+
         if name in cls._states:
             raise ValueError(f"State '{name}' is already registered.")
-        state_class = create_state_class(name, on_enter, on_exit)
+        state_class = create_state_class(
+            name, on_enter, on_exit, is_initial, is_terminal
+        )
         cls._states[name] = state_class
         return state_class
 
@@ -39,9 +51,9 @@ class StateRegistry:
     def get(cls, name):
         """Retrieve a registered state class by name."""
         if name not in cls._states:
-            raise ValueError(f"State '{name}' is not registered.")
+            raise StateNotFoundError(f"State '{name}' is not registered.")
         return cls._states[name]
-    
+
     @classmethod
     def clear(cls):
         """Clear all registered states."""
@@ -51,9 +63,14 @@ class StateRegistry:
 # User-facing State API
 class State:
     """User API for creating and using states."""
-    def __init__(self, name, on_enter=None, on_exit=None):
+
+    def __init__(
+        self, name, on_enter=None, on_exit=None, is_initial=False, is_terminal=False
+    ):
         self.name = name
-        self._state_class = StateRegistry.register(name, on_enter, on_exit)
+        self._state_class = StateRegistry.register(
+            name, on_enter, on_exit, is_initial, is_terminal
+        )
         self._state_instance = self._state_class()
 
     def __getattr__(self, attr):
