@@ -76,7 +76,6 @@ name = "flow-fsm"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "pytest-cov" },
     { name = "pyyaml" },
 ]
 
@@ -84,20 +83,19 @@ dependencies = [
 dev = [
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-cov" },
     { name = "readme-builder" },
     { name = "ruff" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-]
+requires-dist = [{ name = "pyyaml", specifier = ">=6.0.2" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy", specifier = ">=1.13.0" },
     { name = "pytest", specifier = ">=8.3.4" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "readme-builder", specifier = ">=0.1.3" },
     { name = "ruff", specifier = ">=0.8.3" },
 ]
